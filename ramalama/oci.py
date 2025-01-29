@@ -4,14 +4,8 @@ import subprocess
 import tempfile
 
 import ramalama.annotations as annotations
-from ramalama.model import Model, MODEL_TYPES
-from ramalama.common import (
-    engine_version,
-    exec_cmd,
-    MNT_FILE,
-    perror,
-    run_cmd,
-)
+from ramalama.model import Model, rm_until_substring
+from ramalama.common import engine_version, exec_cmd, MNT_FILE, perror, run_cmd
 
 prefix = "oci://"
 
@@ -103,10 +97,8 @@ def list_models(args):
 
 class OCI(Model):
     def __init__(self, model, conman):
-        super().__init__(model.removeprefix(prefix).removeprefix("docker://"))
-        for t in MODEL_TYPES:
-            if self.model.startswith(t + "://"):
-                raise ValueError(f"{model} invalid: Only OCI Model types supported")
+        model = rm_until_substring(model, "://")
+        super().__init__(model)
         self.type = "OCI"
         self.conman = conman
 

@@ -857,14 +857,16 @@ def rm_cli(args):
 
 
 def New(model, args):
-    if model.startswith("huggingface://") or model.startswith("hf://") or model.startswith("hf.co/"):
+    if model.startswith("hf://") or model.startswith("huggingface://") or model.startswith("hf.co/"):
         return Huggingface(model)
-    if model.startswith("ollama"):
-        return Ollama(model)
+
+    if (
+        model.startswith("https://") or model.startswith("http://") or model.startswith("file://")
+    ) and not model.startswith("https://ollama.com/library/"):
+        return URL(model)
+
     if model.startswith("oci://") or model.startswith("docker://"):
         return OCI(model, args.engine)
-    if model.startswith("http://") or model.startswith("https://") or model.startswith("file://"):
-        return URL(model)
 
     transport = config.get("transport", "ollama")
     if transport == "huggingface":
