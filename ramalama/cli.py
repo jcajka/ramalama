@@ -196,7 +196,7 @@ The RAMALAMA_CONTAINER_ENGINE environment variable modifies default behaviour.""
         "--ngl",
         dest="ngl",
         type=int,
-        default=config.get("ngl", 999),
+        default=config.get("ngl", -1),
         help="Number of layers to offload to the gpu, if available"
     )
     parser.add_argument(
