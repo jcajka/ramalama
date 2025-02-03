@@ -59,6 +59,7 @@ class HttpClient:
         self.total_to_download += self.file_size
         self.now_downloaded = 0
         self.start_time = time.time()
+        last_update_time = self.start_time
         while True:
             data = self.response.read(1024)
             if not data:
@@ -66,7 +67,10 @@ class HttpClient:
 
             size = file.write(data)
             if progress:
-                self.update_progress(size)
+                current_time = time.time()
+                if current_time - last_update_time >= 0.1:  # 100 ms
+                    self.update_progress(size)
+                    last_update_time = current_time
 
     def human_readable_time(self, seconds):
         hrs = int(seconds) // 3600
